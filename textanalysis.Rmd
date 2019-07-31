@@ -1,0 +1,86 @@
+---
+title: "Text Analysis"
+output: html_notebook
+---
+
+# Libraries (a running list)
+```{r}
+library(tidyverse) # this loads a bunch of packages, with the assumption that you will use some of them. The essential ones are readr and dplyr, as these provide the read_ family of functions and the pipe 
+
+library(readtext) # this is a super convenient library for processing folders of text documents in all formats. It is the swiss army knife of text ingestion tools.
+
+library(quanteda) # this is the most bang for the buck in text analysis packages. 
+```
+
+
+# Get thee a text
+
+Method 1: You have texts in a csv (e.g. twitter data)
+```{r}
+my_texts <- read_csv(yourfilehere)
+  
+# replace yourfilehere with the location of your file, 
+# for example
+# circles <- read_csv("DEMOS/DEMOS_PROJECTS/Circles of Hell - Archive.csv")
+```
+
+Method 2: you have pdfs
+```{r}
+my_texts <- readtext(pathtofiles)
+# hathi_texts <- readtext("DEMOS/DEMOS_PROJECTS/Ribó/")
+# replace pathtofiles with the specific text or folder. Use tab completion to search around on your system as you type
+```
+
+[more coming....]
+Method 3: gutenberg
+library(gutenbergr)
+
+Method 4: Austen
+library(janeaustenr)
+
+# select, organize, and if necessary clean your texts
+If you imported data through read_csv, then you likely need to get a subset of the data into a corpus. You can import the whole thing into the corpus object or, i fyou just want some of the metadata and not all o fit, you can select what you need. 
+```{r}
+my_texts %>% select(idcolumn, textcolumn) -> my_texts_only
+# replace idcolumn and textcolumn with the columns you want. E.g.  circles %>% select(id_str, text). 
+# Note that you can label the columns at this point as well if you would like, e.g. select (id = id_str, tweet = text)
+```
+
+
+If you have plain text files from readtext, then you likely need to clean up some garbage. Quanteda is actually pretty good at this, but you need to examine your data to see whether there are things like recurring titles or page numbers or the like that are causing any particular problems. 
+```{r}
+# method coming soon--- 
+```
+
+
+
+# Build a corpus
+with your text object set up as a list of sorts, then you can turn it into a corpus. A quanteda corpus is particularly flexible as there are numerous helper functions to translate a quanteda corpus into pretty much any other type of corpus object from any other R package (e.g. a dfm or a a dtm)
+```{r}
+my_corpus <- corpus(my_texts)
+# replace the values as needed. Read the manual page on corpus and check out the quanteda documentation for the various options when setting up a corpus. These include setting various aspects of the metadata. 
+```
+
+# Examine the corpus 
+Quanteda has plenty of commands for examining your corpus. Go to the quanteda tutorial to check it out
+```{r}
+summary(my_corpus) # get some basic status about your texts
+```
+
+You can select texts with the texts() function
+```{r}
+texts(my_corpus)[1] # selects the first text in the corpus to display.
+```
+
+You can create an instant condcordance and look at keywords in context (KWIC)
+```{r}
+kwic(my_corpus, pattern = "dante")
+kwic(my_corpus, pattern = phrase("circle of"))
+```
+
+
+# tokenize the text
+```{r}
+tokens(txt, remove_numbers = FALSE, remove_punct = TRUE)
+```
+
